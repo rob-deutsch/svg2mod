@@ -771,8 +771,9 @@ class Ellipse(Transformable):
         self.transform_styles(matrix)
 
         self.center = matrix * self.center
-        self.rx = matrix.xscale()*self.rx
-        self.ry = matrix.yscale()*self.ry
+        # Radii are lengths, so mirroring/reflection must not make them negative.
+        self.rx = abs(matrix.xscale()) * self.rx
+        self.ry = abs(matrix.yscale()) * self.ry
         self.rotation += math.degrees(matrix.rot().angle)
         self.matrix= matrix
 
