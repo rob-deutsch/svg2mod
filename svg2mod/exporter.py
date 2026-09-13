@@ -452,7 +452,14 @@ class Svg2ModExport(ABC):
     #------------------------------------------------------------------------
 
     def _write_polygon_outline( self, points, layer, stroke_width ):
-
+        # KiCad polygons are implicitly closed. Do not serialize the
+        # duplicate closing point used internally by svg2mod.
+        if (
+            len(points) > 1
+            and points[0].x == points[-1].x
+            and points[0].y == points[-1].y
+        ):
+            points = points[:-1]
         prior_point = None
         for point in points:
 
