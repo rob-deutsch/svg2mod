@@ -1430,6 +1430,15 @@ class Svg2ModExportLatest(Svg2ModExportPretty):
     #------------------------------------------------------------------------
 
     def _write_polygon_outline( self, points, layer, stroke_width = 0):
+        # KiCad polygons are implicitly closed. PolygonSegment keeps a
+        # duplicate closing point internally, but it should not be
+        # serialized into fp_poly/gr_poly.
+        if (
+            len(points) > 1
+            and points[0].x == points[-1].x
+            and points[0].y == points[-1].y
+        ):
+            points = points[:-1]
         self._write_polygon_header( points, layer, stroke_width)
 
         for point in points:
